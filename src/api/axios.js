@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL?.trim() ||
     "https://staffmanagement-backend-mt9g.onrender.com/api",
-  timeout: 30000,
+  timeout: 120000,
 });
 
 api.interceptors.request.use(
