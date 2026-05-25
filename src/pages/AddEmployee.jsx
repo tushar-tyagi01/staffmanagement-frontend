@@ -113,7 +113,12 @@ const AddEmployee = () => {
         joiningDate: data.joiningDate,
       });
 
-      const employee = response.data?.data || response.data || {};
+      const responseBody = response?.data;
+      if (responseBody?.success === false) {
+        throw new Error(responseBody.message || "Failed to add employee");
+      }
+
+      const employee = responseBody?.data || responseBody || {};
       const employeeId = employee?._id || employee?.id || "";
 
       setNewEmployeeData({
@@ -122,10 +127,12 @@ const AddEmployee = () => {
         id: employeeId,
       });
       setShowSuccessModal(true);
-      toast.success("Employee added successfully");
+      toast.success(responseBody?.message || "Employee added successfully");
     } catch (err) {
-      console.error("Add employee error:", err);
-      const msg = err.response?.data?.message || "Failed to add employee";
+      const errorData = err.response?.data || err;
+      console.error("Add employee error:", errorData);
+      const msg =
+        err.response?.data?.message || err.message || "Failed to add employee";
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
