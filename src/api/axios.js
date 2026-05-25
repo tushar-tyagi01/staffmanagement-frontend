@@ -2,7 +2,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api", // Mock URL
+  baseURL:
+    import.meta.env.VITE_API_URL?.trim() ||
+    "https://staffmanagement-backend-mt9g.onrender.com/api",
   timeout: 10000,
 });
 
