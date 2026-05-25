@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL?.trim() ||
     "https://staffmanagement-backend-mt9g.onrender.com/api",
-  timeout: 10000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use(
@@ -14,6 +14,16 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    if (import.meta.env.DEV) {
+      console.debug(
+        "API request:",
+        config.method,
+        `${config.baseURL}${config.url}`,
+        config,
+      );
+    }
+
     return config;
   },
   (error) => {
@@ -26,6 +36,15 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (import.meta.env.DEV && error.config) {
+      console.error(
+        "API request failed:",
+        error.config.method,
+        `${error.config.baseURL}${error.config.url}`,
+        error.message,
+      );
+    }
+
     if (
       error.response &&
       (error.response.status === 401 || error.response.status === 403)
