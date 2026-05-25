@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,7 +8,6 @@ import {
   X,
   Bot,
   Sparkles,
-  Loader2,
   ArrowLeft,
   Copy,
   Check,
@@ -53,7 +52,6 @@ const AddEmployee = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     setValue,
   } = useForm({
     resolver: yupResolver(employeeSchema),
@@ -115,7 +113,9 @@ const AddEmployee = () => {
         joiningDate: data.joiningDate,
       });
 
-      const employeeId = response.data?.data?.id || "";
+      const employee = response.data?.data || response.data || {};
+      const employeeId = employee?._id || employee?.id || "";
+
       setNewEmployeeData({
         name: data.name,
         email: data.email,
@@ -124,6 +124,7 @@ const AddEmployee = () => {
       setShowSuccessModal(true);
       toast.success("Employee added successfully");
     } catch (err) {
+      console.error("Add employee error:", err);
       const msg = err.response?.data?.message || "Failed to add employee";
       toast.error(msg);
     } finally {
@@ -399,7 +400,7 @@ const AddEmployee = () => {
       {/* Success Modal */}
       <Modal
         isOpen={showSuccessModal}
-        onClose={() => {}}
+        onClose={() => setShowSuccessModal(false)}
         title=""
         showHeader={false}
       >
@@ -481,7 +482,6 @@ const AddEmployee = () => {
               variant="outline"
               onClick={() => {
                 setShowSuccessModal(false);
-                const { name, email } = newEmployeeData;
                 navigate("/employees/new");
               }}
               className="flex-1"
