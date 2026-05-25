@@ -114,7 +114,7 @@ const AddEmployee = () => {
       });
 
       const responseBody = response?.data;
-      if (responseBody?.success === false) {
+      if (!responseBody?.success) {
         throw new Error(responseBody.message || "Failed to add employee");
       }
 
